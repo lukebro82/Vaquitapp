@@ -1,0 +1,25 @@
+{
+  "name": "sd-l3-vaquitapp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack -p 4004",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "firebase": "^11.10.0",
+    "mercadopago": "^2.1.0",
+    "next": "15.1.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sass": "^1.83.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}
