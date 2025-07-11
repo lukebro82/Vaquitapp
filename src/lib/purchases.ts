@@ -1,4 +1,10 @@
-import { collection, addDoc, updateDoc, doc } from "firebase/firestore/lite";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  getDocs,
+} from "firebase/firestore/lite";
 import { FirebaseDB } from "./firebase";
 
 type Purchase = {
@@ -10,35 +16,21 @@ type Purchase = {
   status: string;
 };
 export async function getConfirmedPayments(): Promise<Purchase[]> {
-  // Mock data
-  return [
-    {
-      id: "1",
-      from: "Pepito",
-      amount: 33000,
-      message: "Ahi te va mi aporte",
-      date: new Date(),
-      status: "confirmed",
-    },
-    {
-      id: "2",
-      from: "Juanita",
-      amount: 54000,
-      message: "Apoyo esta campaña",
-      date: new Date(),
-      status: "confirmed",
-    },
-    {
-      id: "3",
-      from: "Pepita",
-      amount: 60000,
-      message: "Ojalá que llegues",
-      date: new Date(),
-      status: "confirmed",
-    },
-  ];
-}
+  const confirmedPayments = collection(FirebaseDB, "donaciones");
+  const querySnapshot = await getDocs(confirmedPayments);
 
+  return querySnapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      from: data.from,
+      amount: data.amount,
+      message: data.message,
+      date: data.date?.toDate ? data.date.toDate() : new Date(data.date),
+      status: data.status,
+    } as Purchase;
+  });
+}
 export async function createPurchase(
   newPurchInput: Pick<Purchase, "from" | "amount" | "message">
 ): Promise<string> {
@@ -51,11 +43,13 @@ export async function createPurchase(
   const purchaseRef = collection(FirebaseDB, "donaciones");
   const docRef = await addDoc(purchaseRef, purchase);
 
+  console.log("HOALLL", docRef.id);
   return docRef.id;
 }
 
 export async function confirmPurchase(purchaseId: string) {
   // confirmamos la compra en la DB
+  console.log(purchaseId, "HOAL SOY EL PURCHASE ID");
   const purchaseRef = doc(FirebaseDB, "donaciones", purchaseId);
 
   try {
