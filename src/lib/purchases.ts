@@ -4,6 +4,8 @@ import {
   updateDoc,
   doc,
   getDocs,
+  query,
+  where,
 } from "firebase/firestore/lite";
 import { FirebaseDB } from "./firebase";
 
@@ -16,8 +18,9 @@ type Purchase = {
   status: string;
 };
 export async function getConfirmedPayments(): Promise<Purchase[]> {
-  const confirmedPayments = collection(FirebaseDB, "donaciones");
-  const querySnapshot = await getDocs(confirmedPayments);
+  const donacionesRef = collection(FirebaseDB, "donaciones");
+  const q = query(donacionesRef, where("status", "==", "confirmed"));
+  const querySnapshot = await getDocs(q);
 
   return querySnapshot.docs.map((doc) => {
     const data = doc.data();
